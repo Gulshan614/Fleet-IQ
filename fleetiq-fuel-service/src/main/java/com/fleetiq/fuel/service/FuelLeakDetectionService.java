@@ -166,13 +166,7 @@ public class FuelLeakDetectionService {
             );
 
             String json = objectMapper.writeValueAsString(anomalyDto);
-            ProducerRecord<String, String> record = new ProducerRecord<>(ANOMALY_TOPIC, vehicleId.toString(), json);
-            record.headers().add("tenant-id", tenantId.toString().getBytes(StandardCharsets.UTF_8));
-            record.headers().add("anomaly-type", ANOMALY_TYPE.getBytes(StandardCharsets.UTF_8));
-            record.headers().add("correlation-id", correlationId.getBytes(StandardCharsets.UTF_8));
-            record.headers().add("producer-id", "fleetiq-fuel-service".getBytes(StandardCharsets.UTF_8));
-
-            redisTemplate.convertAndSend(record);
+            redisTemplate.convertAndSend(ANOMALY_TOPIC, json);
             log.debug("Published LEAK anomaly to {} for vehicle={}", ANOMALY_TOPIC, vehicleId);
         } catch (Exception e) {
             log.error("Failed to publish LEAK anomaly for vehicle={}: {}", vehicleId, e.getMessage(), e);
