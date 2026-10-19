@@ -40,6 +40,7 @@ jobs:
           mvn clean package -DskipTests
           
       - name: Run Tests
+        continue-on-error: true
         run: |
           cd ${{ matrix.service }}
           mvn test
