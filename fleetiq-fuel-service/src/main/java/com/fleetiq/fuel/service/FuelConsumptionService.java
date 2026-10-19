@@ -155,13 +155,7 @@ public class FuelConsumptionService {
             );
 
             String json = objectMapper.writeValueAsString(alert);
-            ProducerRecord<String, String> record = new ProducerRecord<>(ALERT_TOPIC, vehicleId.toString(), json);
-            record.headers().add("tenant-id", tenantId.toString().getBytes(StandardCharsets.UTF_8));
-            record.headers().add("alert-type", ALERT_TYPE.getBytes(StandardCharsets.UTF_8));
-            record.headers().add("correlation-id", correlationId.getBytes(StandardCharsets.UTF_8));
-            record.headers().add("producer-id", "fleetiq-fuel-service".getBytes(StandardCharsets.UTF_8));
-
-            redisTemplate.convertAndSend(record);
+            redisTemplate.convertAndSend(ALERT_TOPIC, json);
             log.debug("Published HIGH_CONSUMPTION alert to {} for vehicle={}", ALERT_TOPIC, vehicleId);
         } catch (Exception e) {
             log.error("Failed to publish HIGH_CONSUMPTION alert for vehicle={}: {}", vehicleId, e.getMessage(), e);
