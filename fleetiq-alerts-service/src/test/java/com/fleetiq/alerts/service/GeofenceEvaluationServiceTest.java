@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.mockito.ArgumentCaptor;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -24,7 +24,7 @@ class GeofenceEvaluationServiceTest {
 
     private GeofenceCacheService cacheService;
     private GeofenceEventRepository eventRepository;
-    private KafkaTemplate<String, Object> kafkaTemplate;
+    private StringRedisTemplate redisTemplate;
     private GeofenceEvaluationService service;
 
     private GeometryFactory gf = new GeometryFactory();
@@ -36,8 +36,8 @@ class GeofenceEvaluationServiceTest {
     void setUp() {
         cacheService = mock(GeofenceCacheService.class);
         eventRepository = mock(GeofenceEventRepository.class);
-        kafkaTemplate = mock(KafkaTemplate.class);
-        service = new GeofenceEvaluationService(cacheService, eventRepository, kafkaTemplate);
+        redisTemplate = mock(StringRedisTemplate.class);
+        service = new GeofenceEvaluationService(cacheService, eventRepository, redisTemplate);
 
         testGeofence = new Geofence();
         testGeofence.setId(UUID.randomUUID());
