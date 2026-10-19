@@ -148,11 +148,7 @@ public class FuelAnalyticsService {
             summary.put("timestamp", timestamp.toString());
 
             String json = objectMapper.writeValueAsString(summary);
-            ProducerRecord<String, String> record = new ProducerRecord<>(ANALYTICS_TOPIC, vehicleId.toString(), json);
-            record.headers().add("tenant-id", tenantId.toString().getBytes(StandardCharsets.UTF_8));
-            record.headers().add("producer-id", "fleetiq-fuel-service".getBytes(StandardCharsets.UTF_8));
-
-            redisTemplate.convertAndSend(record);
+            redisTemplate.convertAndSend(ANALYTICS_TOPIC, json);
             log.debug("Published fuel analytics to {} for vehicle={}", ANALYTICS_TOPIC, vehicleId);
         } catch (Exception e) {
             log.error("Failed to publish fuel analytics for vehicle={}: {}", vehicleId, e.getMessage(), e);
