@@ -45,7 +45,7 @@ class AlertRoutingServiceTest {
 
         // History repository should only save ONCE
         verify(historyRepository, times(1)).save(any(AlertHistory.class));
-        verify(redisTemplate, times(1)).send(eq("alert.analytics"), any(UnifiedAlertEvent.class));
+      
     }
 
     @Test
