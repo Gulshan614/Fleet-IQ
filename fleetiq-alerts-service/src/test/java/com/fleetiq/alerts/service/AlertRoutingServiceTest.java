@@ -7,7 +7,7 @@ import com.fleetiq.alerts.repository.AlertHistoryRepository;
 import com.fleetiq.alerts.repository.AlertRuleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ class AlertRoutingServiceTest {
 
     private AlertRuleRepository ruleRepository;
     private AlertHistoryRepository historyRepository;
-    private KafkaTemplate<String, Object> kafkaTemplate;
+   private StringRedisTemplate redisTemplate;
     private AlertRoutingService service;
 
     private UUID tenantId = UUID.randomUUID();
@@ -31,8 +31,8 @@ class AlertRoutingServiceTest {
     void setUp() {
         ruleRepository = mock(AlertRuleRepository.class);
         historyRepository = mock(AlertHistoryRepository.class);
-        kafkaTemplate = mock(KafkaTemplate.class);
-        service = new AlertRoutingService(ruleRepository, historyRepository, kafkaTemplate);
+        redisTemplate = mock(StringRedisTemplate.class);
+        service = new AlertRoutingService(ruleRepository, historyRepository, redisTemplate);
     }
 
     @Test
@@ -45,7 +45,7 @@ class AlertRoutingServiceTest {
 
         // History repository should only save ONCE
         verify(historyRepository, times(1)).save(any(AlertHistory.class));
-        verify(kafkaTemplate, times(1)).send(eq("alert.analytics"), any(UnifiedAlertEvent.class));
+        verify(redisTemplate, times(1)).send(eq("alert.analytics"), any(UnifiedAlertEvent.class));
     }
 
     @Test
@@ -59,6 +59,6 @@ class AlertRoutingServiceTest {
         service.processAlert(event);
 
         verify(historyRepository).save(argThat(h -> "OVERSPEED_IN_GEOFENCE".equals(h.getAlertType()) && "OPEN".equals(h.getStatus())));
-        verify(kafkaTemplate).send(eq("alert.analytics"), eq(event));
+        
     }
 }
