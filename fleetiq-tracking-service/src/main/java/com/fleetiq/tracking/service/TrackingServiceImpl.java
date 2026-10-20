@@ -185,13 +185,7 @@ public class TrackingServiceImpl implements TrackingService {
                 );
 
                 String processedJson = objectMapper.writeValueAsString(processed);
-
-                ProducerRecord<String, String> record = new ProducerRecord<>(PROCESSED_TOPIC, vehicleId.toString(), processedJson);
-                record.headers().add("tenant-id", tenantId.toString().getBytes(StandardCharsets.UTF_8));
-                record.headers().add("correlation-id", correlationId.getBytes(StandardCharsets.UTF_8));
-                record.headers().add("producer-id", "fleetiq-tracking-service".getBytes(StandardCharsets.UTF_8));
-
-                redisTemplate.convertAndSend(record);
+                redisTemplate.convertAndSend(PROCESSED_TOPIC, processedJson);
 
                 // 5. Broadcast live update to WS STOMP topics
                 simpMessagingTemplate.convertAndSend("/topic/vehicle/" + vehicleId, processed);
@@ -233,13 +227,7 @@ public class TrackingServiceImpl implements TrackingService {
         try {
             DlqEnvelope envelope = new DlqEnvelope(telemetry, reason, errorMessage, correlationId, System.currentTimeMillis());
             String dlqJson = objectMapper.writeValueAsString(envelope);
-            
-            ProducerRecord<String, String> record = new ProducerRecord<>(DLQ_TOPIC, correlationId, dlqJson);
-            record.headers().add("correlation-id", correlationId.getBytes(StandardCharsets.UTF_8));
-            record.headers().add("producer-id", "fleetiq-tracking-service".getBytes(StandardCharsets.UTF_8));
-            record.headers().add("error-reason", reason.getBytes(StandardCharsets.UTF_8));
-
-            redisTemplate.convertAndSend(record);
+            redisTemplate.convertAndSend(DLQ_TOPIC, dlqJson);
         } catch (Exception e) {
             log.error("Failed to publish telemetry error message to DLQ", e);
         }
