@@ -97,9 +97,12 @@ To maintain the microservice architecture without incurring massive cloud costs,
 * **CI/CD**: Fully automated deployments triggered via GitHub repository syncs (Render Blueprint `render.yaml`).
 
 ---
+## 🙏 Credits
+
+Originally created by [prashanth9968](https://github.com/prashanth9968/Fleet-IQ). This copy includes my changes: fixed Maven dependencies, migrated Kafka publishing calls to Redis, and repaired the CI/CD pipeline.
+
 
 <div align="center">
   <i>Developed with focus on Clean Architecture, Event-Driven Design, and Enterprise Scalability.</i>
 </div>
 
-##Based on prashanth9968/Fleet-IQ. Changes: fixed Maven dependencies, migrated Kafka publishing calls to Redis, and repaired the CI/CD pipeline.
