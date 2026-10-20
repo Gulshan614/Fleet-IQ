@@ -101,3 +101,5 @@ To maintain the microservice architecture without incurring massive cloud costs,
 <div align="center">
   <i>Developed with focus on Clean Architecture, Event-Driven Design, and Enterprise Scalability.</i>
 </div>
+
+##Based on prashanth9968/Fleet-IQ. Changes: fixed Maven dependencies, migrated Kafka publishing calls to Redis, and repaired the CI/CD pipeline.
